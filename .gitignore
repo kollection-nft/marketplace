@@ -1,0 +1,17 @@
+node_modules
+build
+\.idea/
+\.vs/
+*.spec.wat
+*.spec.map
+*.wasm
+*.pb
+*.sh
+**/abi/*.abi
+**/abi/*.json
+**/proto/*.ts
+**/assembly/*.boilerplate.ts
+
+
+test.js
+decoder.js
