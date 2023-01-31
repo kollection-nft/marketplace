@@ -51,7 +51,7 @@ export class Orders {
 
     // checks expiration date for the order
     let currentDate = Date.now() as u64;
-    System.require(currentDate > time_expire, "MarketplaceV1.create: INVALID_EXPIRES")
+    System.require(currentDate < time_expire, "MarketplaceV1.create: INVALID_EXPIRES")
 
     // pre-data
     let sOwner = Base58.encode(owner);
@@ -109,7 +109,7 @@ export class Orders {
     System.require(order, "MarketplaceV1.execute: EXIST_ORDER");
 
     // check if the buyer is the same seller
-    System.require(Arrays.equal(order!.seller, caller), "MarketplaceV1.execute: BUYER_IS_SELLER");
+    System.require(!Arrays.equal(order!.seller, caller), "MarketplaceV1.execute: BUYER_IS_SELLER");
 
     // checks expiration date for the order
     let currentDate = Date.now() as u64;
