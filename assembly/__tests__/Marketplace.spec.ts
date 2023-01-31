@@ -10,22 +10,22 @@ const MOCKADRESS2 = Base58.decode("1BrPkP7JhBwT4MuRDMWiiysGEu4XkyXuCH");
 const MOCKCOLLECTION = Base58.decode("1M6NjRHh5x926wZUXYUz86x6j5MBqQJAvQ");
 const MOCKTOKEN = Base58.decode("1H88naibGSwCbxnXB3MpYSdiEChKducag3");
 
+function setBlockHeader(): void {
+
+}
+
 
 describe('contract', () => {
   beforeEach(() => {
     MockVM.reset();
     MockVM.setContractId(CONTRACT_ID);
     // set transaction
-    let headInfo = new chain.head_info();
-    headInfo.head_block_time = 123456789;
-    headInfo.last_irreversible_block = 3;
-    MockVM.setHeadInfo(headInfo);
-    let _transaction = new protocol.transaction();
-    let header = new protocol.transaction_header();
-    header.payer = MOCKADRESS;
-    _transaction.id = StringBytes.stringToBytes("0x12345");
-    _transaction.header = header;
-    MockVM.setTransaction(_transaction);
+    setBlockHeader()
+    let block = new protocol.block();
+    let blockHeader = new protocol.block_header();
+    blockHeader.timestamp = Date.now();
+    block.header = blockHeader
+    MockVM.setBlock(block);
   });
 
   it("should create order and get order", () => {
@@ -64,14 +64,20 @@ describe('contract', () => {
     ];
     MockVM.setCallContractResults(contractResults);
     MockVM.setCaller(new chain.caller_data(MOCKADRESS, chain.privilege.user_mode));
-    let order = new marketplace.create_order_arguments(MOCKCOLLECTION, MOCKTOKEN, 1, 100, Date.now() + 1000)
+    let order = new marketplace.create_order_arguments(MOCKCOLLECTION, MOCKTOKEN, 1, 100, Date.now() + 10000)
     let res = _mkp.create_order(order);
     expect(res.result).toBe(true);
 
-    // does not create order by expiration of time
+    // // does not create order by expiration of time
     expect(() => {
       MockVM.reset();
       MockVM.setContractId(CONTRACT_ID);
+      let block = new protocol.block();
+      let blockHeader = new protocol.block_header();
+      let currentDate = Date.now();
+      blockHeader.timestamp = currentDate
+      block.header = blockHeader
+      MockVM.setBlock(block);
       MockVM.setCaller(new chain.caller_data(MOCKADRESS, chain.privilege.user_mode));
       let contractResults: system_calls.exit_arguments[] = [
         new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.owner_of_result(MOCKADRESS), colections.owner_of_result.encode) )),
@@ -80,14 +86,19 @@ describe('contract', () => {
       ];
       MockVM.setCallContractResults(contractResults);
       let _mkp = new Marketplace();
-      let order = new marketplace.create_order_arguments(MOCKCOLLECTION, MOCKTOKEN, 1, 100, Date.now())
+      let order = new marketplace.create_order_arguments(MOCKCOLLECTION, MOCKTOKEN, 1, 100, currentDate - 1)
       _mkp.create_order(order);
     }).toThrow();
 
-    // does not create order for contract approval
+    // // does not create order for contract approval
     expect(() => {
       MockVM.reset();
       MockVM.setContractId(CONTRACT_ID);
+      let block = new protocol.block();
+      let blockHeader = new protocol.block_header();
+      blockHeader.timestamp = Date.now();
+      block.header = blockHeader
+      MockVM.setBlock(block);
       MockVM.setCaller(new chain.caller_data(MOCKADRESS, chain.privilege.user_mode));
       let contractResults: system_calls.exit_arguments[] = [
         new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.owner_of_result(MOCKADRESS), colections.owner_of_result.encode) )),
