@@ -50,7 +50,9 @@ export class Orders {
     System.require(approvedContract ||  approvedOperator, "MarketplaceV1.create: CONTRACT_NOT_MANAGE_ASSET")
 
     // checks expiration date for the order
-    let currentDate = Date.now() as u64;
+    let blockTimestampField = System.getBlockField("header.timestamp");
+    System.require(blockTimestampField != null, 'block height cannot be null');
+    let currentDate = blockTimestampField!.uint64_value as u64;
     System.require(currentDate < time_expire, "MarketplaceV1.create: INVALID_EXPIRES")
 
     // pre-data
@@ -112,7 +114,9 @@ export class Orders {
     System.require(!Arrays.equal(order!.seller, caller), "MarketplaceV1.execute: BUYER_IS_SELLER");
 
     // checks expiration date for the order
-    let currentDate = Date.now() as u64;
+    let blockTimestampField = System.getBlockField("header.timestamp");
+    System.require(blockTimestampField != null, 'block height cannot be null');
+    let currentDate = blockTimestampField!.uint64_value as u64;
     System.require(currentDate <= order!.time_expire, "MarketplaceV1.execute: EXPIRED_ORDER");
 
     // prepared token
@@ -196,7 +200,9 @@ export class Orders {
     System.require(Arrays.equal(order!.seller, caller), "MarketplaceV1.cancel: BUYER_IS_SELLER");
 
     // checks expiration date for the order
-    let currentDate = Date.now() as u64;
+    let blockTimestampField = System.getBlockField("header.timestamp");
+    System.require(blockTimestampField != null, 'block height cannot be null');
+    let currentDate = blockTimestampField!.uint64_value as u64;
     System.require(currentDate <= order!.time_expire, "MarketplaceV1.cancel: EXPIRED_ORDER");
 
     // remove order
