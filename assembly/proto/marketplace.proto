@@ -77,7 +77,7 @@ message create_order_event {
   uint64 time_expire = 6 [jstype = JS_STRING];
 }
 
-message execure_order_event {
+message execute_order_event {
   bytes id = 1;
   bytes buyer = 2 [(koinos.btype) = ADDRESS];
   bytes seller = 3 [(koinos.btype) = ADDRESS];

@@ -45,7 +45,7 @@ export class Orders {
     System.require(Arrays.equal(owner, caller), "MarketplaceV1.create: NOT_ASSET_OWNER")
 
     // check if the contract can handle the token
-    let approvedContract = _colecction.getApproved(token_id) == this._contractId;
+    let approvedContract = Arrays.equal(_colecction.getApproved(token_id), this._contractId);
     let approvedOperator = _colecction.isApprovedForAll(owner, this._contractId);
     System.require(approvedContract ||  approvedOperator, "MarketplaceV1.create: CONTRACT_NOT_MANAGE_ASSET")
 
@@ -159,7 +159,7 @@ export class Orders {
     this._state.removeOrder(id);
 
     // generate event
-    const executeEvent = new marketplace.execure_order_event(
+    const executeEvent = new marketplace.execute_order_event(
       order!.id,
       caller,
       order!.seller,
@@ -172,7 +172,7 @@ export class Orders {
     const impacted = [caller, order!.seller];
     System.event(
       "marketplace.execute_order",
-      Protobuf.encode(executeEvent, marketplace.execure_order_event.encode),
+      Protobuf.encode(executeEvent, marketplace.execute_order_event.encode),
       impacted
     );
 

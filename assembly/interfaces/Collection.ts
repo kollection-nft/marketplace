@@ -8,7 +8,7 @@ enum entries {
   total_supply_entry = 0xb0da3934,
   royalties_entry = 0x36e90cd0,
   transfer_entry = 0x27f576ca,
-  owner_entry = 0x27f576ca,
+  owner_entry = 0xed61c847,
   balance_of_entry = 0x5c721497,
   approved_entry = 0x4c731020,
   approved_operator_entry = 0xe7ab8ce5
