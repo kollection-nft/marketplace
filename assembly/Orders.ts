@@ -78,6 +78,7 @@ export class Orders {
       order.id,
       caller,
       collection,
+      token_sell,
       token_id,
       token_price,
       time_expire
