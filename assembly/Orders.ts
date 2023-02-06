@@ -44,6 +44,9 @@ export class Orders {
     // check if the owner is the one who calls the call
     System.require(Arrays.equal(owner, caller), "MarketplaceV1.create: NOT_ASSET_OWNER")
 
+    // filter accepted tokens for payments
+    System.require(Arrays.equal(token_sell, Constants.KoinContractId()), "MarketplaceV1.create: TOKEN_UNACEPTED")
+
     // check if the contract can handle the token
     let approvedContract = Arrays.equal(_colecction.getApproved(token_id), this._contractId);
     let approvedOperator = _colecction.isApprovedForAll(owner, this._contractId);
@@ -53,7 +56,7 @@ export class Orders {
     let blockTimestampField = System.getBlockField("header.timestamp");
     System.require(blockTimestampField != null, 'block height cannot be null');
     let currentDate = blockTimestampField!.uint64_value as u64;
-    System.require(currentDate < time_expire, "MarketplaceV1.create: INVALID_EXPIRES")
+    System.require(currentDate < time_expire || 0 == time_expire, "MarketplaceV1.create: INVALID_EXPIRES")
 
     // pre-data
     let sOwner = Base58.encode(owner);
@@ -118,7 +121,7 @@ export class Orders {
     let blockTimestampField = System.getBlockField("header.timestamp");
     System.require(blockTimestampField != null, 'block height cannot be null');
     let currentDate = blockTimestampField!.uint64_value as u64;
-    System.require(currentDate <= order!.time_expire, "MarketplaceV1.execute: EXPIRED_ORDER");
+    System.require(currentDate <= order!.time_expire || order!.time_expire == 0, "MarketplaceV1.execute: EXPIRED_ORDER");
 
     // prepared token
     let token = new Token(order!.token_sell);
@@ -204,7 +207,7 @@ export class Orders {
     let blockTimestampField = System.getBlockField("header.timestamp");
     System.require(blockTimestampField != null, 'block height cannot be null');
     let currentDate = blockTimestampField!.uint64_value as u64;
-    System.require(currentDate <= order!.time_expire, "MarketplaceV1.cancel: EXPIRED_ORDER");
+    System.require(currentDate <= order!.time_expire || order!.time_expire == 0, "MarketplaceV1.cancel: EXPIRED_ORDER");
 
     // remove order
     this._state.removeOrder(id);
