@@ -1,5 +1,5 @@
 syntax = "proto3";
-package colections;
+package collections;
 import "koinos/options.proto";
 
 
@@ -17,27 +17,8 @@ message royalty_object {
 }
  
 message config_object {
-   // bools
-   bool initialize = 1;
-   bool increment = 11;
-
-   // string
-   string name = 2;
-   string symbol = 3;
-   string base_uri = 4;
-
-   // numbers
-   uint64 max_limit = 5;
-   uint64 mint_price = 6;
-
-
-   // address
-   bytes creator = 7 [(koinos.btype) = ADDRESS];
-   bytes token_pay = 8 [(koinos.btype) = ADDRESS];
-   bytes address_pay = 9 [(koinos.btype) = ADDRESS];
-
-   // bases
-   repeated royalty_object royalties = 10;
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
+   repeated royalty_object royalties = 2;
 }
 
 message token_approval_object {
@@ -64,6 +45,15 @@ message uri_arguments {
 }
 
 message uri_result {
+   string value = 1;
+}
+
+// @description Returns the token's symbol
+// @read-only true
+message symbol_arguments {
+}
+
+message symbol_result {
    string value = 1;
 }
 
@@ -105,22 +95,32 @@ message royalties_result {
    repeated royalty_object value = 1;
 }
 
-// @description Returns the token's creator
-// @read-only true
-message creator_arguments {
+// @description Returns collection royalties
+// @read-only false
+message set_royalties_arguments {
+   repeated royalty_object value = 1;
 }
 
-message creator_result {
+message set_royalties_result {
+   bool value = 1;
+}
+
+
+// @description Returns collection owner
+// @read-only true
+message owner_arguments {
+}
+message owner_result {
    bytes value = 1 [(koinos.btype) = ADDRESS];
 }
 
-// @description Returns the token's symbol
-// @read-only true
-message symbol_arguments {
+// @description Transfer ownership
+// @read-only false
+message transfer_ownership_arguments {
+   bytes owner = 1 [(koinos.btype) = ADDRESS];
 }
-
-message symbol_result {
-   string value = 1;
+message transfer_ownership_result {
+   bool value = 1;
 }
 
 // @description Gets the balance of an owner
@@ -143,21 +143,11 @@ message owner_of_result {
    bytes value = 1 [(koinos.btype) = ADDRESS];
 }
 
-// @description Initialize collection
-// @read-only false
-message initialize_arguments {
-   config_object config = 1;
-}
-
-message initialize_result {
-   bool value = 1;
-}
-
 // @description Mints a new token
 // @read-only false
 message mint_arguments {
    bytes to = 1 [(koinos.btype) = ADDRESS];
-   uint64 token_id = 2 [jstype = JS_STRING];
+   uint64 tokens = 2 [jstype = JS_STRING];
 }
 
 message mint_result {
