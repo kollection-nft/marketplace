@@ -81,10 +81,10 @@ export class Orders {
       order.id,
       caller,
       collection,
-      token_sell,
       token_id,
       token_price,
-      time_expire
+      time_expire,
+      token_sell,
     );
     const impacted = [caller];
     System.event(
@@ -112,7 +112,7 @@ export class Orders {
     let order = this._state.getOrder(id);
 
     // check if the order exists
-    System.require(order, "MarketplaceV1.execute: EXIST_ORDER");
+    System.require(order != null, "MarketplaceV1.execute: EXIST_ORDER");
 
     // check if the buyer is the same seller
     System.require(!Arrays.equal(order!.seller, caller), "MarketplaceV1.execute: BUYER_IS_SELLER");
@@ -171,7 +171,8 @@ export class Orders {
       order!.token_id,
       tokenRemain,
       protocolFee,
-      royaltiesTotal
+      royaltiesTotal,
+      order!.token_sell
     );
     const impacted = [caller, order!.seller];
     System.event(
@@ -198,7 +199,7 @@ export class Orders {
     let order = this._state.getOrder(id);
 
     // check if the order exists
-    System.require(order, "MarketplaceV1.cancel: EXIST_ORDER");
+    System.require(order != null, "MarketplaceV1.cancel: EXIST_ORDER");
 
     // check if the buyer is the same seller
     System.require(Arrays.equal(order!.seller, caller), "MarketplaceV1.cancel: BUYER_IS_SELLER");
