@@ -45,7 +45,7 @@ export class Orders {
     System.require(Arrays.equal(owner, caller), "MarketplaceV1.create: NOT_ASSET_OWNER")
 
     // filter accepted tokens for payments
-    System.require(Arrays.equal(token_sell, Constants.KoinContractId()), "MarketplaceV1.create: TOKEN_UNACEPTED")
+    System.require(Arrays.equal(token_sell, Constants.TOKENS_ACEPTED), "MarketplaceV1.create: TOKEN_UNACEPTED")
 
     // check if the contract can handle the token
     let approvedContract = Arrays.equal(_colecction.getApproved(token_id), this._contractId);

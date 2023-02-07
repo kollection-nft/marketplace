@@ -1,14 +1,14 @@
 import { Base58, MockVM, protocol, chain, StringBytes, system_calls, Protobuf, Arrays, token } from "@koinos/sdk-as";
 import { Marketplace } from '../Marketplace';
 import { marketplace } from '../proto/marketplace';
-import { colections } from '../proto/colections';
+import { collections } from '../proto/collections';
 
 // ADDRESS
 const CONTRACT_ID = Base58.decode("17TAwcuJ4tHc9TmCbZ24nSMvY9bPxwQq5s");
 const MOCKADRESS = Base58.decode("13nxuEi19W8sfjQiaPLSv2ht2WVp6dNyhn");
 const MOCKADRESS2 = Base58.decode("1BrPkP7JhBwT4MuRDMWiiysGEu4XkyXuCH");
 const MOCKCOLLECTION = Base58.decode("1M6NjRHh5x926wZUXYUz86x6j5MBqQJAvQ");
-const MOCKTOKEN = Base58.decode("1H88naibGSwCbxnXB3MpYSdiEChKducag3");
+const MOCKTOKEN = Base58.decode("19JntSm8pSNETT9aHTwAUHC5RMoaSmgZPJ");
 
 function setBlockHeader(): void {
 
@@ -32,9 +32,9 @@ describe('contract', () => {
 
     let _mkp = new Marketplace();
     let contractResults: system_calls.exit_arguments[] = [
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.owner_of_result(MOCKADRESS), colections.owner_of_result.encode) )),
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.get_approved_result(CONTRACT_ID), colections.get_approved_result.encode) )),
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.is_approved_for_all_result(true), colections.is_approved_for_all_result.encode) ))
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.owner_of_result(MOCKADRESS), collections.owner_of_result.encode) )),
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.get_approved_result(CONTRACT_ID), collections.get_approved_result.encode) )),
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.is_approved_for_all_result(true), collections.is_approved_for_all_result.encode) ))
     ];
     MockVM.setCallContractResults(contractResults);
     MockVM.setCaller(new chain.caller_data(MOCKADRESS, chain.privilege.user_mode));
@@ -58,9 +58,9 @@ describe('contract', () => {
   it("should create sales order", () => {
     let _mkp = new Marketplace();
     let contractResults: system_calls.exit_arguments[] = [
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.owner_of_result(MOCKADRESS), colections.owner_of_result.encode) )),
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.get_approved_result(CONTRACT_ID), colections.get_approved_result.encode) )),
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.is_approved_for_all_result(true), colections.is_approved_for_all_result.encode) ))
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.owner_of_result(MOCKADRESS), collections.owner_of_result.encode) )),
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.get_approved_result(CONTRACT_ID), collections.get_approved_result.encode) )),
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.is_approved_for_all_result(true), collections.is_approved_for_all_result.encode) ))
     ];
     MockVM.setCallContractResults(contractResults);
     MockVM.setCaller(new chain.caller_data(MOCKADRESS, chain.privilege.user_mode));
@@ -80,9 +80,9 @@ describe('contract', () => {
       MockVM.setBlock(block);
       MockVM.setCaller(new chain.caller_data(MOCKADRESS, chain.privilege.user_mode));
       let contractResults: system_calls.exit_arguments[] = [
-        new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.owner_of_result(MOCKADRESS), colections.owner_of_result.encode) )),
-        new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.get_approved_result(CONTRACT_ID), colections.get_approved_result.encode) )),
-        new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.is_approved_for_all_result(true), colections.is_approved_for_all_result.encode) ))
+        new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.owner_of_result(MOCKADRESS), collections.owner_of_result.encode) )),
+        new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.get_approved_result(CONTRACT_ID), collections.get_approved_result.encode) )),
+        new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.is_approved_for_all_result(true), collections.is_approved_for_all_result.encode) ))
       ];
       MockVM.setCallContractResults(contractResults);
       let _mkp = new Marketplace();
@@ -101,9 +101,9 @@ describe('contract', () => {
       MockVM.setBlock(block);
       MockVM.setCaller(new chain.caller_data(MOCKADRESS, chain.privilege.user_mode));
       let contractResults: system_calls.exit_arguments[] = [
-        new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.owner_of_result(MOCKADRESS), colections.owner_of_result.encode) )),
-        new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.get_approved_result(MOCKTOKEN), colections.get_approved_result.encode) )),
-        new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.is_approved_for_all_result(false), colections.is_approved_for_all_result.encode) ))
+        new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.owner_of_result(MOCKADRESS), collections.owner_of_result.encode) )),
+        new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.get_approved_result(MOCKTOKEN), collections.get_approved_result.encode) )),
+        new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.is_approved_for_all_result(false), collections.is_approved_for_all_result.encode) ))
       ];
       MockVM.setCallContractResults(contractResults);
       let _mkp = new Marketplace();
@@ -115,9 +115,9 @@ describe('contract', () => {
   it("should execute sales order", () => {
     let _mkp = new Marketplace();
     let contractResults0: system_calls.exit_arguments[] = [
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.owner_of_result(MOCKADRESS), colections.owner_of_result.encode) )),
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.get_approved_result(CONTRACT_ID), colections.get_approved_result.encode) )),
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.is_approved_for_all_result(true), colections.is_approved_for_all_result.encode) ))
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.owner_of_result(MOCKADRESS), collections.owner_of_result.encode) )),
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.get_approved_result(CONTRACT_ID), collections.get_approved_result.encode) )),
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.is_approved_for_all_result(true), collections.is_approved_for_all_result.encode) ))
     ];
     MockVM.setCallContractResults(contractResults0);
     MockVM.setCaller(new chain.caller_data(MOCKADRESS, chain.privilege.user_mode));
@@ -127,9 +127,9 @@ describe('contract', () => {
     // execute order
     let contractResults: system_calls.exit_arguments[] = [
       new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new token.transfer_result(), token.transfer_result.encode) )),
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.royalties_result([]), colections.royalties_result.encode) )),
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.royalties_result([]), collections.royalties_result.encode) )),
       new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new token.transfer_result(), token.transfer_result.encode) )),
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.transfer_result(true), colections.transfer_result.encode) )),
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.transfer_result(true), collections.transfer_result.encode) )),
     ];
     MockVM.setCallContractResults(contractResults);
     MockVM.setCaller(new chain.caller_data(MOCKADRESS2, chain.privilege.user_mode));
@@ -141,9 +141,9 @@ describe('contract', () => {
   it("should cancel sales order", () => {
     let _mkp = new Marketplace();
     let contractResults0: system_calls.exit_arguments[] = [
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.owner_of_result(MOCKADRESS), colections.owner_of_result.encode) )),
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.get_approved_result(CONTRACT_ID), colections.get_approved_result.encode) )),
-      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new colections.is_approved_for_all_result(true), colections.is_approved_for_all_result.encode) ))
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.owner_of_result(MOCKADRESS), collections.owner_of_result.encode) )),
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.get_approved_result(CONTRACT_ID), collections.get_approved_result.encode) )),
+      new system_calls.exit_arguments(0, new chain.result( Protobuf.encode(new collections.is_approved_for_all_result(true), collections.is_approved_for_all_result.encode) ))
     ];
     MockVM.setCallContractResults(contractResults0);
     MockVM.setCaller(new chain.caller_data(MOCKADRESS, chain.privilege.user_mode));
