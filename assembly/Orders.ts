@@ -117,6 +117,10 @@ export class Orders {
     // check if the buyer is the same seller
     System.require(!Arrays.equal(order!.seller, caller), "MarketplaceV1.execute: BUYER_IS_SELLER");
 
+    // check if the owner of the NFT is the same seller
+    let owner = _colecction.ownerOf(token_id);
+    System.require(Arrays.equal(order!.seller, owner), "MarketplaceV1.execute: NOT_ASSET_OWNER")
+
     // checks expiration date for the order
     let blockTimestampField = System.getBlockField("header.timestamp");
     System.require(blockTimestampField != null, 'block height cannot be null');
