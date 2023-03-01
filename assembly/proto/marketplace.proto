@@ -7,7 +7,7 @@ message order_object {
   bytes seller = 2 [(koinos.btype) = ADDRESS];
   bytes collection = 3 [(koinos.btype) = ADDRESS];
   bytes token_sell = 4 [(koinos.btype) = ADDRESS];
-  uint64 token_id = 5 [jstype = JS_STRING];
+  bytes token_id = 5 [(koinos.btype) = HEX];
   uint64 token_price = 6 [jstype = JS_STRING];
   uint64 time_expire = 7 [jstype = JS_STRING];
 }
@@ -21,7 +21,7 @@ message order_object {
 // @read-only true
 message get_order_arguments {
   bytes collection = 1 [(koinos.btype) = ADDRESS];
-  uint64 token_id = 2 [jstype = JS_STRING];
+  bytes token_id = 2 [(koinos.btype) = HEX];
 }
 message get_order_result {
   order_object result = 1;
@@ -33,7 +33,7 @@ message create_order_arguments {
   bytes collection = 1 [(koinos.btype) = ADDRESS];
   bytes token_sell = 2 [(koinos.btype) = ADDRESS];
   
-  uint64 token_id = 3 [jstype = JS_STRING];
+  bytes token_id = 3 [(koinos.btype) = HEX];
   uint64 token_price = 4 [jstype = JS_STRING];
   uint64 time_expire = 5 [jstype = JS_STRING];
 }
@@ -46,7 +46,7 @@ message create_order_result {
 // @read-only false
 message execute_order_arguments {
   bytes collection = 1 [(koinos.btype) = ADDRESS];
-  uint64 token_id = 2 [jstype = JS_STRING];
+  bytes token_id = 2 [(koinos.btype) = HEX];
 }
 message execute_order_result {
   bool result = 1;
@@ -57,7 +57,7 @@ message execute_order_result {
 // @read-only false
 message cancel_order_arguments {
   bytes collection = 1 [(koinos.btype) = ADDRESS];
-  uint64 token_id = 2 [jstype = JS_STRING];
+  bytes token_id = 2 [(koinos.btype) = HEX];
 }
 message cancel_order_result {
   bool result = 1;
@@ -72,7 +72,7 @@ message create_order_event {
   bytes id = 1;
   bytes seller = 2 [(koinos.btype) = ADDRESS];
   bytes collection = 3 [(koinos.btype) = ADDRESS];
-  uint64 token_id = 4 [jstype = JS_STRING];
+  bytes token_id = 4 [(koinos.btype) = HEX];
   uint64 token_price = 5 [jstype = JS_STRING];
   uint64 time_expire = 6 [jstype = JS_STRING];
   bytes token_sell = 7 [(koinos.btype) = ADDRESS];
@@ -83,7 +83,7 @@ message execute_order_event {
   bytes buyer = 2 [(koinos.btype) = ADDRESS];
   bytes seller = 3 [(koinos.btype) = ADDRESS];
   bytes collection = 4 [(koinos.btype) = ADDRESS];
-  uint64 token_id = 5 [jstype = JS_STRING];
+  bytes token_id = 5 [(koinos.btype) = HEX];
   uint64 price_final = 6 [jstype = JS_STRING];
   uint64 protocol_fee = 7 [jstype = JS_STRING];
   uint64 royalties_fee = 8 [jstype = JS_STRING];
@@ -94,5 +94,5 @@ message cancel_order_event {
   bytes id = 1;
   bytes seller = 3 [(koinos.btype) = ADDRESS];
   bytes collection = 4 [(koinos.btype) = ADDRESS];
-  uint64 token_id = 5 [jstype = JS_STRING];
+  bytes token_id = 5 [(koinos.btype) = HEX];
 }
