@@ -23,8 +23,8 @@ export class Utils {
     return head_block
   }
 
-  static getOrderId(timeExpire: u64, owner: string, collection: string, tokenId: u64, tokenPrice: u64): Uint8Array {
-    let stringId = timeExpire.toString() + owner + collection + tokenId.toString() + tokenPrice.toString()
+  static getOrderId(timeExpire: u64, owner: string, collection: string, tokenId: string, tokenPrice: u64): Uint8Array {
+    let stringId = timeExpire.toString() + owner + collection + tokenId + tokenPrice.toString()
     return StringBytes.stringToBytes(stringId);
   }
 }
