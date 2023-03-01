@@ -25,7 +25,7 @@ export class Collection {
     const args = new collections.name_arguments();
     const callRes = System.call(this._contractId, entries.name_entry, Protobuf.encode(args, collections.name_arguments.encode));
     System.require(callRes.code == 0, "failed to retrieve token name");
-    const res = Protobuf.decode<collections.name_result>(callRes.res.object as Uint8Array, collections.name_result.decode);
+    const res = Protobuf.decode<collections.string_object>(callRes.res.object as Uint8Array, collections.string_object.decode);
     return res.value;
   }
 
@@ -33,7 +33,7 @@ export class Collection {
     const args = new collections.symbol_arguments();
     const callRes = System.call(this._contractId, entries.symbol_entry, Protobuf.encode(args, collections.symbol_arguments.encode));
     System.require(callRes.code == 0, "failed to retrieve token symbol");
-    const res = Protobuf.decode<collections.symbol_result>(callRes.res.object as Uint8Array, collections.symbol_result.decode);
+    const res = Protobuf.decode<collections.string_object>(callRes.res.object as Uint8Array, collections.string_object.decode);
     return res.value;
   }
 
@@ -41,7 +41,7 @@ export class Collection {
     const args = new collections.total_supply_arguments();
     const callRes = System.call(this._contractId, entries.total_supply_entry, Protobuf.encode(args, collections.total_supply_arguments.encode));
     System.require(callRes.code == 0, "failed to retrieve token supply");
-    const res = Protobuf.decode<collections.total_supply_result>(callRes.res.object as Uint8Array, collections.total_supply_result.decode);
+    const res = Protobuf.decode<collections.uint64_object>(callRes.res.object as Uint8Array, collections.uint64_object.decode);
     return res.value;
   }
 
@@ -53,11 +53,11 @@ export class Collection {
     return res.value;
   }
 
-  ownerOf(token_id: u64): Uint8Array {
+  ownerOf(token_id: Uint8Array): Uint8Array {
     const args = new collections.owner_of_arguments(token_id);
     const callRes = System.call(this._contractId, entries.owner_entry, Protobuf.encode(args, collections.owner_of_arguments.encode));
     System.require(callRes.code == 0, "failed to retrieve token balance");
-    const res = Protobuf.decode<collections.owner_of_result>(callRes.res.object as Uint8Array, collections.owner_of_result.decode);
+    const res = Protobuf.decode<collections.address_object>(callRes.res.object as Uint8Array, collections.address_object.decode);
     return res.value;
   }
 
@@ -65,21 +65,21 @@ export class Collection {
     const args = new collections.balance_of_arguments(owner);
     const callRes = System.call(this._contractId, entries.balance_of_entry, Protobuf.encode(args, collections.balance_of_arguments.encode));
     System.require(callRes.code == 0, "failed to retrieve token balance");
-    const res = Protobuf.decode<collections.balance_of_result>(callRes.res.object as Uint8Array, collections.balance_of_result.decode);
+    const res = Protobuf.decode<collections.uint64_object>(callRes.res.object as Uint8Array, collections.uint64_object.decode);
     return res.value;
   }
 
-  transfer(from: Uint8Array, to: Uint8Array, token_id: u64): bool {
+  transfer(from: Uint8Array, to: Uint8Array, token_id: Uint8Array): bool {
     const args = new collections.transfer_arguments(from, to, token_id);
     const callRes = System.call(this._contractId, entries.transfer_entry, Protobuf.encode(args, collections.transfer_arguments.encode));
     return callRes.code == error.error_code.success;
   }
 
-  getApproved(token_id: u64): Uint8Array {
+  getApproved(token_id: Uint8Array): Uint8Array {
     const args = new collections.get_approved_arguments(token_id);
     const callRes = System.call(this._contractId, entries.approved_entry, Protobuf.encode(args, collections.get_approved_arguments.encode));
     System.require(callRes.code == 0, "failed to retrieve token balance");
-    const res = Protobuf.decode<collections.get_approved_result>(callRes.res.object as Uint8Array, collections.get_approved_result.decode);
+    const res = Protobuf.decode<collections.address_object>(callRes.res.object as Uint8Array, collections.address_object.decode);
     return res.value;
   }
 
@@ -87,7 +87,7 @@ export class Collection {
     const args = new collections.is_approved_for_all_arguments(owner, operator);
     const callRes = System.call(this._contractId, entries.approved_operator_entry, Protobuf.encode(args, collections.is_approved_for_all_arguments.encode));
     System.require(callRes.code == 0, "failed to retrieve token balance");
-    const res = Protobuf.decode<collections.is_approved_for_all_result>(callRes.res.object as Uint8Array, collections.is_approved_for_all_result.decode);
+    const res = Protobuf.decode<collections.bool_object>(callRes.res.object as Uint8Array, collections.bool_object.decode);
     return res.value;
   }
 }

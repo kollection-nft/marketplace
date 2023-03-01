@@ -1,4 +1,4 @@
-import { System, Arrays, Base58, Crypto, Protobuf, Token, SafeMath } from "@koinos/sdk-as";
+import { System, Arrays, Base58, Crypto, Protobuf, Token, SafeMath, StringBytes } from "@koinos/sdk-as";
 import { State } from "./State";
 import { marketplace } from "./proto/marketplace";
 
@@ -61,10 +61,11 @@ export class Orders {
     // pre-data
     let sOwner = Base58.encode(owner);
     let sColection = Base58.encode(collection);
+    let sTokenId = StringBytes.bytesToString(token_id);
 
     // create order
     let order = new marketplace.order_object();
-    order.id = System.hash(Crypto.multicodec.sha2_256, Utils.getOrderId(currentDate, sOwner, sColection, token_id, token_price))!;
+    order.id = System.hash(Crypto.multicodec.sha2_256, Utils.getOrderId(currentDate, sOwner, sColection, sTokenId, token_price))!;
     order.seller = caller;
     order.token_id = token_id;
     order.token_sell = token_sell;
