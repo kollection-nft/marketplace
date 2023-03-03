@@ -5,7 +5,7 @@ import { marketplace } from "./proto/marketplace";
 // Libs
 import { Utils } from "./libraries/Utils";
 import { MathMK } from "./libraries/Math";
-import { Constants } from "./Constantes";
+import { Constants } from "./Constants";
 
 // interfaces
 import { Collection } from "./interfaces/Collection";
@@ -45,7 +45,7 @@ export class Orders {
     System.require(Arrays.equal(owner, caller), "MarketplaceV1.create: NOT_ASSET_OWNER")
 
     // filter accepted tokens for payments
-    System.require(Arrays.equal(token_sell, Constants.TOKENS_ACEPTED), "MarketplaceV1.create: TOKEN_UNACEPTED")
+    System.require(Arrays.equal(token_sell, Constants.TOKENS_ACEPTED), "MarketplaceV1.create: TOKEN_UNACCEPTED")
 
     // check if the contract can handle the token
     let approvedContract = Arrays.equal(_colecction.getApproved(token_id), this._contractId);
@@ -153,7 +153,7 @@ export class Orders {
         royaltiesTotal = SafeMath.add(royaltiesTotal, royalty.amount);
       }
       // checks expiration date for the order
-      System.require(royaltiesTotal<=10000, "MarketplaceV1.execute: ROYALTY_EXEDED_MAX");
+      System.require(royaltiesTotal<=10000, "MarketplaceV1.execute: ROYALTY_EXCEDED_MAX");
     }
 
     // transfer seller
