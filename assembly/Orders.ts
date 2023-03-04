@@ -20,7 +20,7 @@ export class Orders {
 
   get_order(args: marketplace.get_order_arguments): marketplace.get_order_result {
     let res = new marketplace.get_order_result();
-    let orderId = `${Base58.encode(args.collection)}_${args.token_id.toString()}`;
+    let orderId = `${Base58.encode(args.collection)}_${ StringBytes.bytesToString(args.token_id) }`;
     let order = this._state.getOrder(orderId)
     if(order) {
       res.result = order;
@@ -74,7 +74,7 @@ export class Orders {
     order.time_expire = time_expire;
 
     // save order
-    let orderId = `${sColection}_${token_id.toString()}`;
+    let orderId = `${sColection}_${sTokenId}`;
     this._state.saveOrder(orderId, order);
 
     // generate event
@@ -109,7 +109,8 @@ export class Orders {
 
     // pre-data
     let sColection = Base58.encode(collection);
-    let id = `${sColection}_${token_id.toString()}`;
+    let sTokenId = StringBytes.bytesToString(token_id);
+    let id = `${sColection}_${sTokenId}`;
     let order = this._state.getOrder(id);
 
     // check if the order exists
@@ -200,7 +201,8 @@ export class Orders {
 
     // pre-data
     let sColection = Base58.encode(collection);
-    let id = `${sColection}_${token_id.toString()}`;
+    let sTokenId = StringBytes.bytesToString(token_id);
+    let id = `${sColection}_${sTokenId}`;
     let order = this._state.getOrder(id);
 
     // check if the order exists
