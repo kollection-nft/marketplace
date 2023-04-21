@@ -37,19 +37,19 @@ export class Orders {
     let time_expire = args.time_expire;
 
     // process
-    let _colecction = new Collection(collection);
+    let _collection = new Collection(collection);
     let caller = Utils.getCaller();
-    let owner = _colecction.ownerOf(token_id);
+    let owner = _collection.ownerOf(token_id);
 
     // check if the owner is the one who calls the call
     System.require(Arrays.equal(owner, caller), "MarketplaceV1.create: NOT_ASSET_OWNER")
 
     // filter accepted tokens for payments
-    System.require(Arrays.equal(token_sell, Constants.TOKENS_ACEPTED), "MarketplaceV1.create: TOKEN_UNACCEPTED")
+    System.require(Arrays.equal(token_sell, Constants.TOKENS_ACCEPTED), "MarketplaceV1.create: TOKEN_UNACCEPTED")
 
     // check if the contract can handle the token
-    let approvedContract = Arrays.equal(_colecction.getApproved(token_id), this._contractId);
-    let approvedOperator = _colecction.isApprovedForAll(owner, this._contractId);
+    let approvedContract = Arrays.equal(_collection.getApproved(token_id), this._contractId);
+    let approvedOperator = _collection.isApprovedForAll(owner, this._contractId);
     System.require(approvedContract ||  approvedOperator, "MarketplaceV1.create: CONTRACT_NOT_MANAGE_ASSET")
 
     // checks expiration date for the order
@@ -104,7 +104,7 @@ export class Orders {
     let collection = args.collection;
 
     // process
-    let _colecction = new Collection(collection);
+    let _collection = new Collection(collection);
     let caller = Utils.getCaller();
 
     // pre-data
@@ -119,7 +119,7 @@ export class Orders {
     System.require(!Arrays.equal(order!.seller, caller), "MarketplaceV1.execute: BUYER_IS_SELLER");
 
     // check if the owner of the NFT is the same seller
-    let owner = _colecction.ownerOf(token_id);
+    let owner = _collection.ownerOf(token_id);
     System.require(Arrays.equal(order!.seller, owner), "MarketplaceV1.execute: NOT_ASSET_OWNER")
 
     // checks expiration date for the order
@@ -141,7 +141,7 @@ export class Orders {
     tokenRemain = SafeMath.sub(tokenRemain, protocolFee);
 
     // transfer royalties
-    let royalties = _colecction.getRoyalties();
+    let royalties = _collection.getRoyalties();
     let royaltiesTotal: u64 = 0;
     if(royalties.length) {
       for (let index = 0; index < royalties.length; index++) {
@@ -161,7 +161,7 @@ export class Orders {
     System.require(resultTrasferSellet, "MarketplaceV1.execute: TRANSFER_PROTOCOL_SELLER");
 
     // trasnfer buyer
-    let resultTrasferBuyer = _colecction.transfer(order!.seller, caller, order!.token_id);
+    let resultTrasferBuyer = _collection.transfer(order!.seller, caller, order!.token_id);
     System.require(resultTrasferBuyer, "MarketplaceV1.execute: TRANSFER_PROTOCOL_BUYER");
 
     // remove order
