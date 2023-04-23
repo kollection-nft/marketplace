@@ -8,7 +8,7 @@ enum entries {
   total_supply_entry = 0xb0da3934,
   royalties_entry = 0x36e90cd0,
   transfer_entry = 0x27f576ca,
-  owner_entry = 0xed61c847,
+  owner_of_entry = 0xed61c847,
   balance_of_entry = 0x5c721497,
   approved_entry = 0x4c731020,
   approved_operator_entry = 0xe7ab8ce5
@@ -55,7 +55,7 @@ export class Collection {
 
   ownerOf(token_id: Uint8Array): Uint8Array {
     const args = new collections.owner_of_arguments(token_id);
-    const callRes = System.call(this._contractId, entries.owner_entry, Protobuf.encode(args, collections.owner_of_arguments.encode));
+    const callRes = System.call(this._contractId, entries.owner_of_entry, Protobuf.encode(args, collections.owner_of_arguments.encode));
     System.require(callRes.code == 0, "failed to retrieve token balance");
     const res = Protobuf.decode<collections.address_object>(callRes.res.object as Uint8Array, collections.address_object.decode);
     return res.value;
