@@ -2,22 +2,17 @@ import { System } from "@koinos/sdk-as";
 import { marketplace } from "./proto/marketplace";
 
 // libs
-import { State } from "./State";
 import { Orders } from "./Orders";
 
 export class Marketplace {
   _contractId: Uint8Array;
-  _state: State;
 
   // controllers
   _order: Orders;
-
   constructor() {
     this._contractId = System.getContractId();
-    this._state = new State(this._contractId);
-
     // controller
-    this._order = new Orders(this._state, this._contractId);
+    this._order = new Orders(this._contractId);
   }
 
   // controller orders

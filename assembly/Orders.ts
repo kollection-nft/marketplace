@@ -1,5 +1,5 @@
-import { System, Arrays, Base58, Crypto, Protobuf, Token, SafeMath, StringBytes } from "@koinos/sdk-as";
-import { State } from "./State";
+import { System, Arrays, Crypto, Protobuf, Token, SafeMath } from "@koinos/sdk-as";
+import { Orders as StateOrders } from "./State/Orders";
 import { marketplace } from "./proto/marketplace";
 
 // Libs
@@ -12,16 +12,15 @@ import { Collection } from "./interfaces/Collection";
 
 export class Orders {
   _contractId: Uint8Array;
-  _state: State;
-  constructor(state: State, contractId: Uint8Array) {
-    this._state = state;
+  _orders: StateOrders;
+  constructor(contractId: Uint8Array) {
+    this._orders = new StateOrders(contractId);
     this._contractId = contractId;
   }
 
   get_order(args: marketplace.get_order_arguments): marketplace.get_order_result {
     let res = new marketplace.get_order_result();
-    let orderId = `${Base58.encode(args.collection)}_${ StringBytes.bytesToString(args.token_id) }`;
-    let order = this._state.getOrder(orderId)
+    let order = this._orders.getOrder(args.collection, args.token_id)
     if(order) {
       res.result = order;
     }
@@ -58,14 +57,9 @@ export class Orders {
     let currentDate = blockTimestampField!.uint64_value as u64;
     System.require(currentDate < time_expire || 0 == time_expire, "MarketplaceV1.create: INVALID_EXPIRES")
 
-    // pre-data
-    let sOwner = Base58.encode(owner);
-    let sColection = Base58.encode(collection);
-    let sTokenId = StringBytes.bytesToString(token_id);
-
     // create order
     let order = new marketplace.order_object();
-    order.id = System.hash(Crypto.multicodec.sha2_256, Utils.getOrderId(currentDate, sOwner, sColection, sTokenId, token_price))!;
+    order.id = System.hash(Crypto.multicodec.sha2_256, Utils.getOrderId(currentDate, owner, collection, token_id, token_price))!;
     order.seller = caller;
     order.token_id = token_id;
     order.token_sell = token_sell;
@@ -74,8 +68,7 @@ export class Orders {
     order.time_expire = time_expire;
 
     // save order
-    let orderId = `${sColection}_${sTokenId}`;
-    this._state.saveOrder(orderId, order);
+    this._orders.saveOrder(collection, token_id, order);
 
     // generate event
     const createEvent = new marketplace.create_order_event(
@@ -108,31 +101,28 @@ export class Orders {
     let caller = Utils.getCaller();
 
     // pre-data
-    let sColection = Base58.encode(collection);
-    let sTokenId = StringBytes.bytesToString(token_id);
-    let id = `${sColection}_${sTokenId}`;
-    let order = this._state.getOrder(id);
+    let order = this._orders.getOrder(collection, token_id);
 
     // check if the order exists
     System.require(order != null, "MarketplaceV1.execute: EXIST_ORDER");
 
     // check if the buyer is the same seller
-    System.require(!Arrays.equal(order!.seller, caller), "MarketplaceV1.execute: BUYER_IS_SELLER");
+    System.require(!Arrays.equal(order.seller, caller), "MarketplaceV1.execute: BUYER_IS_SELLER");
 
     // check if the owner of the NFT is the same seller
     let owner = _collection.ownerOf(token_id);
-    System.require(Arrays.equal(order!.seller, owner), "MarketplaceV1.execute: NOT_ASSET_OWNER")
+    System.require(Arrays.equal(order.seller, owner), "MarketplaceV1.execute: NOT_ASSET_OWNER")
 
     // checks expiration date for the order
     let blockTimestampField = System.getBlockField("header.timestamp");
     System.require(blockTimestampField != null, 'block height cannot be null');
     let currentDate = blockTimestampField!.uint64_value as u64;
-    System.require(currentDate <= order!.time_expire || order!.time_expire == 0, "MarketplaceV1.execute: EXPIRED_ORDER");
+    System.require(currentDate <= order.time_expire || order.time_expire == 0, "MarketplaceV1.execute: EXPIRED_ORDER");
 
     // prepared token
-    let token = new Token(order!.token_sell);
-    let tokenTotal = order!.token_price;
-    let tokenRemain = order!.token_price;
+    let token = new Token(order.token_sell);
+    let tokenTotal = order.token_price;
+    let tokenRemain = order.token_price;
 
     // transfer fees protocol
     let treasury = Constants.TREASURY_CONTRACT;
@@ -158,29 +148,29 @@ export class Orders {
     }
 
     // transfer seller
-    let resultTrasferSellet = token.transfer(caller, order!.seller, tokenRemain);
+    let resultTrasferSellet = token.transfer(caller, order.seller, tokenRemain);
     System.require(resultTrasferSellet, "MarketplaceV1.execute: TRANSFER_PROTOCOL_SELLER");
 
     // trasnfer buyer
-    let resultTrasferBuyer = _collection.transfer(order!.seller, caller, order!.token_id);
+    let resultTrasferBuyer = _collection.transfer(order.seller, caller, order.token_id);
     System.require(resultTrasferBuyer, "MarketplaceV1.execute: TRANSFER_PROTOCOL_BUYER");
 
     // remove order
-    this._state.removeOrder(id);
+    this._orders.removeOrder(collection, token_id);
 
     // generate event
     const executeEvent = new marketplace.execute_order_event(
-      order!.id,
+      order.id,
       caller,
-      order!.seller,
-      order!.collection,
-      order!.token_id,
+      order.seller,
+      order.collection,
+      order.token_id,
       tokenRemain,
       protocolFee,
       royaltiesTotal,
-      order!.token_sell
+      order.token_sell
     );
-    const impacted = [caller, order!.seller];
+    const impacted = [caller, order.seller];
     System.event(
       "marketplace.execute_order",
       Protobuf.encode(executeEvent, marketplace.execute_order_event.encode),
@@ -200,34 +190,32 @@ export class Orders {
     let caller = Utils.getCaller();
 
     // pre-data
-    let sColection = Base58.encode(collection);
-    let sTokenId = StringBytes.bytesToString(token_id);
-    let id = `${sColection}_${sTokenId}`;
-    let order = this._state.getOrder(id);
+    // let orderId = new marketplace.order_id();
+    let order = this._orders.getOrder(collection, token_id);
 
     // check if the order exists
     System.require(order != null, "MarketplaceV1.cancel: EXIST_ORDER");
 
     // check if the buyer is the same seller
-    System.require(Arrays.equal(order!.seller, caller), "MarketplaceV1.cancel: BUYER_IS_SELLER");
+    System.require(Arrays.equal(order.seller, caller), "MarketplaceV1.cancel: BUYER_IS_SELLER");
 
     // checks expiration date for the order
     let blockTimestampField = System.getBlockField("header.timestamp");
     System.require(blockTimestampField != null, 'block height cannot be null');
     let currentDate = blockTimestampField!.uint64_value as u64;
-    System.require(currentDate <= order!.time_expire || order!.time_expire == 0, "MarketplaceV1.cancel: EXPIRED_ORDER");
+    System.require(currentDate <= order.time_expire || order.time_expire == 0, "MarketplaceV1.cancel: EXPIRED_ORDER");
 
     // remove order
-    this._state.removeOrder(id);
+    this._orders.removeOrder(collection, token_id);
 
     // generate event
     const executeEvent = new marketplace.cancel_order_event(
-      order!.id,
-      order!.seller,
-      order!.collection,
-      order!.token_id,
+      order.id,
+      order.seller,
+      order.collection,
+      order.token_id,
     );
-    const impacted = [caller, order!.seller];
+    const impacted = [caller, order.seller];
     System.event(
       "marketplace.cancel_order",
       Protobuf.encode(executeEvent, marketplace.cancel_order_event.encode),

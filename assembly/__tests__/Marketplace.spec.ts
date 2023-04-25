@@ -8,7 +8,7 @@ const CONTRACT_ID = Base58.decode("17TAwcuJ4tHc9TmCbZ24nSMvY9bPxwQq5s");
 const MOCKADRESS = Base58.decode("13nxuEi19W8sfjQiaPLSv2ht2WVp6dNyhn");
 const MOCKADRESS2 = Base58.decode("1BrPkP7JhBwT4MuRDMWiiysGEu4XkyXuCH");
 const MOCKCOLLECTION = Base58.decode("1M6NjRHh5x926wZUXYUz86x6j5MBqQJAvQ");
-const MOCKTOKEN = Base58.decode("19JntSm8pSNETT9aHTwAUHC5RMoaSmgZPJ");
+const MOCKTOKEN = Base58.decode("15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL");
 
 
 describe('contract', () => {

@@ -1,5 +1,5 @@
-import { StringBytes, System, value } from "@koinos/sdk-as";
-
+import { StringBytes, System, value, Protobuf } from "@koinos/sdk-as";
+import { marketplace } from "./../proto/marketplace";
 
 export class Utils {
   static getCaller(): Uint8Array {
@@ -23,8 +23,8 @@ export class Utils {
     return head_block
   }
 
-  static getOrderId(timeExpire: u64, owner: string, collection: string, tokenId: string, tokenPrice: u64): Uint8Array {
-    let stringId = timeExpire.toString() + owner + collection + tokenId + tokenPrice.toString()
-    return StringBytes.stringToBytes(stringId);
+  static getOrderId(timeExpire: u64, owner: Uint8Array, collection: Uint8Array, tokenId: Uint8Array, tokenPrice: u64): Uint8Array {
+    let message = new marketplace.hash_id(tokenId, owner, collection, timeExpire, tokenPrice);
+    return Protobuf.encode(message, marketplace.hash_id.encode);
   }
 }
