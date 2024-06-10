@@ -126,23 +126,12 @@ export class Orders {
     // check approval
     // this is also done in the transfer function of the collection contract, but is also here in case approval is removed
     let isTokenApproved: bool = false;
-    if (!Arrays.equal(caller, owner)) {
-        const approval = _collection.getApproved(token_id);
-        if (approval) {
-            let approvedAddress = approval.address as Uint8Array;
-            isTokenApproved = Arrays.equal(approvedAddress, caller);
-        }
-        if (!isTokenApproved) {
-            const operatorApproval = _collection.getApprovedOperator(owner, caller);
-            if (operatorApproval) {
-                isTokenApproved = operatorApproval.approved;
-            }
-            if (!isTokenApproved) {
-                isTokenApproved = System.checkAuthority(authority.authorization_type.contract_call, owner);
-            }
-        }
-        System.require(isTokenApproved, "MarketplaceV1.execute: NO_APPROVAL");
+    const approval = _collection.getApproved(token_id);
+    if (approval) {
+        let approvedAddress = approval.address as Uint8Array;
+        isTokenApproved = Arrays.equal(approvedAddress, order!.seller);
     }
+    System.require(isTokenApproved, "MarketplaceV1.execute: NO_APPROVAL");
 
     // checks expiration date for the order
     let blockTimestampField = System.getBlockField("header.timestamp");
