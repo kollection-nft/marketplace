@@ -1,4 +1,4 @@
-import { Protobuf, System } from "@koinos/sdk-as";
+import { Base58, Protobuf, System } from "@koinos/sdk-as";
 import { error } from "@koinos/proto-as";
 import { collections } from "./../proto/collections"
 
@@ -75,13 +75,22 @@ export class Collection {
     return callRes.code == error.error_code.success;
   }
 
-  getApproved(token_id: Uint8Array): Uint8Array {
+  getApproved(token_id: Uint8Array): collections.token_approval_object | null{
     const args = new collections.get_approved_arguments(token_id);
     const callRes = System.call(this._contractId, entries.approved_entry, Protobuf.encode(args, collections.get_approved_arguments.encode));
     System.require(callRes.code == 0, "failed to retrieve token balance");
     const res = Protobuf.decode<collections.address_object>(callRes.res.object as Uint8Array, collections.address_object.decode);
     return res.value;
   }
+
+  getApprovedOperator(approver: Uint8Array, operator: Uint8Array): collections.operator_approval_object | null {
+    const key = `${Base58.encode(approver)}_${Base58.encode(operator)}`;
+    const args = new collections.get_approved_operator_arguments(key);
+    const callRes = System.call(this._contractId, entries.approved_operator_entry, Protobuf.encode(args, collections.get_approved_operator_arguments.encode));
+    System.require(callRes.code == 0, "failed to retrieve operator approval");
+    const res = Protobuf.decode<collections.operator_approval_object>(callRes.res.object as Uint8Array, collections.operator_approval_object.decode);
+    return res;
+}
 
   isApprovedForAll(owner: Uint8Array, operator: Uint8Array): bool {
     const args = new collections.is_approved_for_all_arguments(owner, operator);
