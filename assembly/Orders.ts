@@ -128,7 +128,7 @@ export class Orders {
     let isTokenApproved: bool = false;
     const approval = _collection.getApproved(token_id);
     if (approval) {
-        let approvedAddress = approval.address as Uint8Array;
+        let approvedAddress = approval as Uint8Array;
         isTokenApproved = Arrays.equal(approvedAddress, order!.seller);
     }
     System.require(isTokenApproved, "MarketplaceV1.execute: NO_APPROVAL");
