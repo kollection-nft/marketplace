@@ -1,4 +1,4 @@
-import { System, Arrays, authority, Base58, Crypto, Protobuf, Token, SafeMath, StringBytes } from "@koinos/sdk-as";
+import { System, Arrays, Base58, Crypto, Protobuf, Token, SafeMath, StringBytes } from "@koinos/sdk-as";
 import { State } from "./State";
 import { marketplace } from "./proto/marketplace";
 
