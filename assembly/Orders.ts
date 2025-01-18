@@ -10,6 +10,11 @@ import { Constants } from "./Constants";
 // interfaces
 import { Collection } from "./interfaces/Collection";
 
+const ListNameServices = [
+  "koin",
+  "vhp"
+]
+
 export class Orders {
   _contractId: Uint8Array;
   _state: State;
@@ -31,7 +36,7 @@ export class Orders {
     let res = new marketplace.create_order_result()
     // data
     let token_id = args.token_id;
-    let token_sell = args.token_sell;
+    let token_sell = args.token_payment;
     let collection = args.collection;
     let token_price = args.token_price;
     let time_expire = args.time_expire;
@@ -45,7 +50,7 @@ export class Orders {
     System.require(Arrays.equal(owner, caller), "MarketplaceV1.create: NOT_ASSET_OWNER")
 
     // filter accepted tokens for payments
-    System.require(Arrays.equal(token_sell, Constants.TOKENS_ACCEPTED), "MarketplaceV1.create: TOKEN_UNACCEPTED")
+    System.require(Constants.TOKENS_ACCEPTED.indexOf(token_sell) != -1, "MarketplaceV1.create: TOKEN_UNACCEPTED")
 
     // check if the contract can handle the token
     let approvedContract = Arrays.equal(_collection.getApproved(token_id), this._contractId);
@@ -68,10 +73,10 @@ export class Orders {
     order.id = System.hash(Crypto.multicodec.sha2_256, Utils.getOrderId(currentDate, sOwner, sColection, sTokenId, token_price))!;
     order.seller = caller;
     order.token_id = token_id;
-    order.token_sell = token_sell;
     order.collection = collection;
     order.token_price = token_price;
     order.time_expire = time_expire;
+    order.token_payment = token_sell;
 
     // save order
     let orderId = `${sColection}_${sTokenId}`;
@@ -85,7 +90,8 @@ export class Orders {
       token_id,
       token_price,
       time_expire,
-      token_sell,
+      new Uint8Array(0),
+      token_sell
     );
     const impacted = [caller];
     System.event(
@@ -130,7 +136,13 @@ export class Orders {
     System.require(currentDate <= order!.time_expire || order!.time_expire == 0, "MarketplaceV1.execute: EXPIRED_ORDER");
 
     // prepared token
-    let token = new Token(order!.token_sell);
+    let tokenAddressFinal: Uint8Array
+    if(order!.token_payment) {
+      tokenAddressFinal = this._getTokenAddress(order!.token_payment);
+    } else {
+      tokenAddressFinal = order!.token_sell;
+    }
+    let token = new Token(tokenAddressFinal);
     let tokenTotal = order!.token_price;
     let tokenRemain = order!.token_price;
 
@@ -178,7 +190,8 @@ export class Orders {
       tokenRemain,
       protocolFee,
       royaltiesTotal,
-      order!.token_sell
+      order!.token_sell,
+      order!.token_payment
     );
     const impacted = [caller, order!.seller];
     System.event(
@@ -236,5 +249,12 @@ export class Orders {
 
     res.result = true;
     return res;
+  }
+
+  private _getTokenAddress(_tokenString: string): Uint8Array {
+    if(ListNameServices.indexOf(_tokenString) != -1) {
+      return System.getContractAddress(_tokenString)
+    }
+    return Base58.decode(_tokenString);
   }
 }

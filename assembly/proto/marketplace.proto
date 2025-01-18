@@ -10,6 +10,9 @@ message order_object {
   bytes token_id = 5 [(koinos.btype) = HEX];
   uint64 token_price = 6 [jstype = JS_STRING];
   uint64 time_expire = 7 [jstype = JS_STRING];
+
+  // This parameter was added for the update to nameservice
+  string token_payment = 8;
 }
 
 
@@ -32,10 +35,12 @@ message get_order_result {
 message create_order_arguments {
   bytes collection = 1 [(koinos.btype) = ADDRESS];
   bytes token_sell = 2 [(koinos.btype) = ADDRESS];
-  
   bytes token_id = 3 [(koinos.btype) = HEX];
   uint64 token_price = 4 [jstype = JS_STRING];
   uint64 time_expire = 5 [jstype = JS_STRING];
+
+  // This parameter was added for the update to nameservice
+  string token_payment = 6;
 }
 message create_order_result {
   bool result = 1;
@@ -76,6 +81,9 @@ message create_order_event {
   uint64 token_price = 5 [jstype = JS_STRING];
   uint64 time_expire = 6 [jstype = JS_STRING];
   bytes token_sell = 7 [(koinos.btype) = ADDRESS];
+
+  // This parameter was added for the update to nameservice
+  string token_payment = 8;
 }
 
 message execute_order_event {
@@ -88,6 +96,9 @@ message execute_order_event {
   uint64 protocol_fee = 7 [jstype = JS_STRING];
   uint64 royalties_fee = 8 [jstype = JS_STRING];
   bytes token_sell = 9 [(koinos.btype) = ADDRESS];
+
+  // This parameter was added for the update to nameservice
+  string token_payment = 10;
 }
 
 message cancel_order_event {
