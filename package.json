@@ -2,7 +2,10 @@
   "name": "marketplace",
   "version": "0.1.0",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "koilib": "^9.0.0"
+  },
   "devDependencies": {
     "@as-covers/core": "^0.2.1",
     "@as-pect/cli": "^6.2.4",
@@ -26,6 +29,8 @@
     "proto": "koinos-sdk-as-cli generate-contract-proto",
     "build:debug": "koinos-sdk-as-cli build-all debug 0 marketplace.proto",
     "build:release": "koinos-sdk-as-cli build-all release 0 marketplace.proto",
-    "test": "koinos-sdk-as-cli run-tests"
+    "test": "koinos-sdk-as-cli run-tests",
+    "deploy": "node scripts/deploy.js",
+    "parse": "node scripts/parse.js"
   }
 }
