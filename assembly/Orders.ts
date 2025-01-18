@@ -140,7 +140,7 @@ export class Orders {
     if(order!.token_payment) {
       tokenAddressFinal = this._getTokenAddress(order!.token_payment);
     } else {
-      tokenAddressFinal = order!.token_sell;
+      tokenAddressFinal = this._getTokenAddress("koin");
     }
     let token = new Token(tokenAddressFinal);
     let tokenTotal = order!.token_price;
