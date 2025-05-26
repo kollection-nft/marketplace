@@ -13,5 +13,6 @@ build
 **/assembly/*.boilerplate.ts
 
 
+.env*
 test.js
 decoder.js
