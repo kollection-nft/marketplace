@@ -129,6 +129,16 @@ export class Orders {
     let owner = _collection.ownerOf(token_id);
     System.require(Arrays.equal(order!.seller, owner), "MarketplaceV1.execute: NOT_ASSET_OWNER")
 
+    // check approval
+    // this is also done in the transfer function of the collection contract, but is also here in case approval is removed
+    let isTokenApproved: bool = false;
+    const approval = _collection.getApproved(token_id);
+    if (approval) {
+        let approvedAddress = approval as Uint8Array;
+        isTokenApproved = Arrays.equal(approvedAddress, order!.seller);
+    }
+    System.require(isTokenApproved, "MarketplaceV1.execute: NO_APPROVAL");
+
     // checks expiration date for the order
     let blockTimestampField = System.getBlockField("header.timestamp");
     System.require(blockTimestampField != null, 'block height cannot be null');
